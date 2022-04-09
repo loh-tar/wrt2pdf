@@ -1,0 +1,216 @@
+wrt2pdf - Create a PDF out of a plain text file
+=================================================
+The name should be read as "write-to-pdf", which is in my opinion very fitting.
+Since you can not only convert an existing file, but also save a stream as PDF.
+
+  Last (and very first) version is v0.6, Apr 2022
+  See below for details.
+
+
+Motivation
+------------
+I was looking for a CLI tool to do just this job. But to my surprise I couldn't
+find one which has minimal dependencies. I had generated such PDFs with KDE/Kate
+and wanted a similar result, whereby I don't care about the graphic borders and
+frames that Kate offers.
+
+To print the created PDF on paper is not the aim, hence the default settings are
+a bit unusual with the narrow margins and the quite small font.
+
+
+Usage
+-------
+Simplest example:
+
+  wrt2pdf -i some-file.txt
+
+
+Features
+----------
+  - Pretty small, ~20KB source, ~70KB executable
+  - CLI only tool
+  - Written in C++ with Qt
+  - No trouble with utf-8 text files
+  - Searchable PDFs
+  - No trouble with copy from PDF and paste elsewhere
+  - Embedded fonts
+  - Try to follow UNIX philosophy "one tool, one job"
+
+
+Anti-Features
+---------------
+  - Even it's a CLI only application it requires Qt-GUI
+  - May fail to process VERY BIG files. The entire file is read into memory and
+    then wrapped by QTextDocument and printed to file by QPrinter
+
+
+Installation
+==============
+
+From Source
+-------------
+The usual way to compile and install is:
+
+    $ cd <source-tree>
+    $ mkdir build; cd build
+    $ cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr
+    $ make
+    $ sudo make install
+
+
+Packages
+----------
+Arch Linux has an AUR, search for wrt2pdf.
+
+
+TODO and BUGS
+===============
+  - No consideration of /etc/papersize and related
+  - Use default paper size fitting to locale (?)
+  - Use default font configured in environment (?)
+  - Use of own config file(s)
+  - Unsure: Header/Footer/Page Numbers
+  - Unsure: Tabulator replacement by number of spaces
+  - Can't create encrypted/password protected files
+  - Can't write to <stdout>
+  -
+
+
+WON'T FIX / NO BUGS
+---------------------
+  - Reformatting the input text in any way, such as
+    - Support multi column generation
+    - Line wrapping or joining in some smart way
+    - Double space the text
+  - Printing line numbers
+  -
+
+All these are task done by tools like pr. But as you see above, there are some
+points where I tend to break this rule.
+
+
+Alternatives
+==============
+Here are a list of tools I had found, or tried.
+
+
+cupsfilter
+------------
+  - In the man page it is marked as deprecated
+  - You can not copy/paste from the generated PDF
+    https://unix.stackexchange.com/a/407845
+  - It's not intended to use as general TXT/PDF generator, it's a CUPS tool
+  - Uses internally /usr/lib/cups/filter/texttopdf
+  - Somehow only a few options and poor documented, IMHO
+
+  cupsfilter some-file.txt >some-file.pdf
+
+
+text2pdf v1.1 (C) Phil Smith, 1996
+------------------------------------
+  - Very small plain C program with surprising manifold features
+  - No utf-8 support, only 7-Bit ASCII
+  - The font will not be embedded
+  - Custom license, free to use but changes requires approval
+
+  text2pdf some-file.txt >some-file.pdf
+
+
+enscript + ghostscript
+------------------------
+  - Two tools involved, but not in a straight way, for just one simple job
+  - The enscript man page look very comprehensive
+
+  enscript some-file.txt -o - | ps2pdf - some-file.pdf
+
+
+a2pdf (C) 2007 Jon Allen
+--------------------------
+  - Perl tool which I only have discovered while writing this README. Not looked
+    closer, nor tested
+
+  a2pdf -o some-file.pdf some-file.txt
+
+
+License
+=========
+
+  GNU General Public License (GPL), Version 2.0
+
+  wrt2pdf - Create a PDF out of a plain text file
+  Copyright (C) 2022 loh.tar@googlemail.com
+
+  See LICENSE for the full license.
+
+
+Release History
+=================
+
+v0.6, Apr 2022 - Very first version
+-------------------------------------
+
+$ wrt2pdf --help
+This is wrt2pdf v0.6
+Create a PDF out of a plain text file
+
+Usage: wrt2pdf [options] [pdf-to-create] [text-file]
+
+Options:
+  -F, --force                      Overwrite existing [pdf-to-create] file
+  -i, --in-file <file-name>        File to be converted. When no
+                                   [pdf-to-create] is given <file-name> is used
+                                   with .pdf suffix
+  -f, --font <font-desc>           Set the font to use by description
+  -L, --list-fonts                 List available fixed pitch fonts
+  -m, --margins <l,r,t,b>          Set the page margins in millimeter as string
+                                   'left,right,top,bottom'
+  -p, --page-size <mok>            Set the paper size by PPD media option
+                                   keyword
+  -P, --list-mo-keys <key-filter>  List PPD media option keywords (mok) and
+                                   description
+  -l, --landscape                  Use page in landscape orientation
+  -I, --info                       Like a dry-run, shows settings and resulting
+                                   page size in rows/cols
+  -T, --test-page                  Generate a test page to verify intended
+                                   settings, similar to -I
+  -v, --version                    Displays version information.
+  -h, -?                           Show usage
+  -H, --help                       Show usage, examples and some more hints
+
+Arguments:
+  pdf-to-create                    The suffix .pdf will be added automatically
+                                   when missing
+  text-file                        File to be converted. When not given stdin
+                                   is used
+
+Examples:
+  Create ./foo.pdf out of /some/where/bar on US Letter
+      wrt2pdf -p letter foo /some/where/bar
+
+  Make a PDF from this help text (funny line, huh?)
+      wrt2pdf --help | wrt2pdf wrt2pdf-help
+
+  Create /some/where/bar.pdf out of /some/where/bar.txt with a custom 10.5mm
+  left margin and 20mm top margin
+      wrt2pdf --margins 10.5,,20  -i /some/where/bar.txt
+
+Note: You can omit margins, then is the default of 5mm used
+
+  Use custom font and size by --font option
+      wrt2pdf -f 'Source Code Pro,Light,11' -i foo.txt
+      wrt2pdf -f 'Helvetica [Cronyx],10' -i foo.txt
+      wrt2pdf -i foo.txt -f 'Helvetica-Cronyx,10'
+
+Note: The first request the font in style Light and size 11Points. The latter
+      two are equal and demonstrate that options may appear anywhere.
+Furthermore is there no special font-style requested but both ways shown how to
+give a foundry (Cronyx in this case)
+
+Miscellaneous:
+  - The hard coded default paper is A4
+  - The hard coded default font is Hack in size 10Points
+  - When using -i without [pdf-to-create] there is no override check done
+  - Fonts displayed by -L prove to be quite unreliable. Some are mysteriously
+    replaced when selected and some have no fixed pitch, resulting in incorrect
+    calculations of maximum rows and cols
+  - The key given by --page-size must match exactly but is case insensitive
