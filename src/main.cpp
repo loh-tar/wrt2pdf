@@ -154,22 +154,21 @@ int main(int argc, char *argv[])
 
     // Font listing is another kind of help...
     if (parser.isSet("list-fonts")) {
-        QFontDatabase database;
-        const QStringList fontFamilies = database.families();
+        const QStringList fontFamilies = QFontDatabase::families();
         for (const QString &family : fontFamilies) {
 
-            if (database.isPrivateFamily(family)) continue; // Apple systems only, says docu
-            if (! database.isFixedPitch(family)) continue;  // For my taste should we only use fixed fonts
-            if (! database.isScalable(family)) continue;    // Um, "Terminus" e.g. don't work, will use: lines=423 columns=599
+            if (QFontDatabase::isPrivateFamily(family)) continue; // Apple systems only, says docu
+            if (! QFontDatabase::isFixedPitch(family)) continue;  // For my taste should we only use fixed fonts
+            if (! QFontDatabase::isScalable(family)) continue;    // Um, "Terminus" e.g. don't work, will use: lines=423 columns=599
 
             qStdOut() << family << Qt::endl;
 
-            const QStringList fontStyles = database.styles(family);
+            const QStringList fontStyles = QFontDatabase::styles(family);
             for (const QString &style : fontStyles) {
-                if (! database.isScalable(family, style)) continue;
+                if (! QFontDatabase::isScalable(family, style)) continue;
 
                 QString sizes;
-                const QList<int> pointSizes = database.pointSizes(family, style);
+                const QList<int> pointSizes = QFontDatabase::pointSizes(family, style);
                 for (int points : pointSizes)
                     sizes += QString::number(points) + ' ';
 
