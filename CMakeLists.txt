@@ -5,6 +5,8 @@ project(wrt2pdf LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+add_compile_definitions(QT_DISABLE_DEPRECATED_BEFORE=0x060602)
+
 find_package(Qt6 REQUIRED COMPONENTS PrintSupport)
 
 qt_standard_project_setup()
