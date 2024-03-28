@@ -3,8 +3,17 @@ wrt2pdf - Create a PDF out of a plain text file
 The name should be read as "write-to-pdf", which is in my opinion very fitting.
 Since you can not only convert an existing file, but also save a stream as PDF.
 
-  Last (and very first) version is v0.6, Apr 2022
-  See below for details.
+
+Last version is v0.6.1, Mar 2024
+----------------------------------
+  - Change CMake to compile with Qt6
+  - Use static QFontDatabase members instead of deprecated object
+  - Enforce minimum Qt version 6.6.2
+
+That's all! This should not have any noticeable consequences in terms of usage.
+Would be nice to be free to choose which Qt version to use, but that needs
+surprising much fumbling. So I decide to keep it simple. Not long and Qt6 will
+be the new standard, until then, just fetch v0.6 if you only have Qt5.
 
 
 Motivation
@@ -23,6 +32,8 @@ Usage
 Simplest example:
 
   wrt2pdf -i some-file.txt
+
+See bottom of this file for a full usage description.
 
 
 Features
@@ -47,6 +58,11 @@ Anti-Features
 Installation
 ==============
 
+Packages
+----------
+Arch Linux has an AUR, search for wrt2pdf.
+
+
 From Source
 -------------
 The usual way to compile and install is:
@@ -56,11 +72,6 @@ The usual way to compile and install is:
     $ cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr
     $ make
     $ sudo make install
-
-
-Packages
-----------
-Arch Linux has an AUR, search for wrt2pdf.
 
 
 TODO and BUGS
