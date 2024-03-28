@@ -1,7 +1,7 @@
 //
 //  wrt2pdf - Create a PDF out of a plain text file
 //
-//  Copyright (C) 2022 loh.tar@googlemail.com
+//  Copyright (C) 2022, 2024 loh.tar@googlemail.com
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -20,7 +20,7 @@
 
 
 #define MY_NAME "wrt2pdf"
-#define MY_VERSION "0.6"
+#define MY_VERSION "0.6.1"
 #define MY_FONTFAMILY "Hack"
 #define MY_FONTSIZE 10
 
